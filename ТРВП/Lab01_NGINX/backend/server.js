@@ -21,6 +21,10 @@ function sendJSON(res, statusCode, data) {
 
 const server = http.createServer((req, res) => {
 
+    if (req.url !== '/NGINX-test') {
+        res.writeHead(404);
+        return res.end(JSON.stringify({ error: "Not Found" }));
+    }
     // ---------- GET ----------
     if (req.method === 'GET') {
         if (!storedRequest) {
