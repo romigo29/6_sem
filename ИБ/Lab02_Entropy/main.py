@@ -1,12 +1,20 @@
 import math
-import os
 from collections import Counter
-from datetime import datetime
 import matplotlib.pyplot as plt
 
+LATIN_ALPHABET = (
+    "abcdefghijklmnopqrstuvwxyz"
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "æøåÆØÅ"
+)
+
+CYRILLIC_ALPHABET = (
+    "абвгғдеёжзийкқлмнңоөпрстуұүфхһцчшщъыіьэюя"
+    "АБВГҒДЕЁЖЗИЙКҚЛМНҢОӨПРСТУҰҮФХҺЦЧШЩЪЫІЬЭЮЯ"
+)
 
 # ==============================
-# 1. Энтропия Шеннона
+# Энтропия Шеннона
 # ==============================
 
 def shannon_entropy(probabilities):
@@ -14,61 +22,30 @@ def shannon_entropy(probabilities):
 
 
 # ==============================
-# 2. Получение полного пути к файлу
+# Анализ текстового файла
 # ==============================
 
-def get_file_path(filename):
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base_dir, filename)
-
-
-# ==============================
-# 3. Анализ текстового файла
-# ==============================
-
-def analyze_text_file(filename):
-    filepath = get_file_path(filename)
-
-    with open(filepath, 'r', encoding='utf-8') as f:
+def analyze_text_file(filename, alphabet):
+    with open(filename, 'r', encoding='utf-8') as f:
         text = f.read()
 
-    total_chars = len(text)
-    counter = Counter(text)
+    filtered = [c for c in text if c in alphabet]
+    total = len(filtered)
 
-    probabilities = {char: count / total_chars for char, count in counter.items()}
-    entropy = shannon_entropy(probabilities.values())
+    counter = Counter(filtered)
 
-    return entropy, counter
+    probabilities = [count / total for count in counter.values()]
+    entropy = shannon_entropy(probabilities)
 
-
-# ==============================
-# 4. Гистограмма частот
-# ==============================
-
-def plot_histogram(counter, title, filename):
-    chars = list(counter.keys())
-    freqs = list(counter.values())
-
-    plt.figure(figsize=(12, 6))
-    plt.bar(chars, freqs)
-    plt.title(title)
-    plt.xlabel("Символы")
-    plt.ylabel("Частота")
-    plt.xticks(rotation=90)
-    plt.tight_layout()
-
-    plt.savefig(filename, dpi=300)
-    plt.close()
+    return entropy, counter, total
 
 
 # ==============================
-# 5. Анализ бинарного файла
+# Анализ бинарного файла
 # ==============================
 
 def analyze_binary_file(filename):
-    filepath = get_file_path(filename)
-
-    with open(filepath, 'rb') as f:
+    with open(filename, 'rb') as f:
         data = f.read()
 
     bits = ''.join(format(byte, '08b') for byte in data)
@@ -76,22 +53,35 @@ def analyze_binary_file(filename):
     total_bits = len(bits)
     counter = Counter(bits)
 
-    probabilities = {bit: count / total_bits for bit, count in counter.items()}
-    entropy = shannon_entropy(probabilities.values())
+    probabilities = [count / total_bits for count in counter.values()]
+    entropy = shannon_entropy(probabilities)
 
-    return entropy
+    information = total_bits * entropy
 
-
-# ==============================
-# 6. Количество информации
-# ==============================
-
-def information_amount(message, entropy):
-    return len(message) * entropy
+    return entropy, information, total_bits
 
 
 # ==============================
-# 7. Энтропия бинарного канала
+# Построение гистограммы
+# ==============================
+
+def plot_histogram(counter, title, filename):
+    symbols = list(counter.keys())
+    frequencies = list(counter.values())
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(symbols, frequencies)
+    plt.title(title)
+    plt.xlabel("Символы")
+    plt.ylabel("Частота")
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.savefig(filename, dpi=300)
+    plt.close()
+
+
+# ==============================
+# Энтропия бинарного канала
 # ==============================
 
 def binary_channel_entropy(p):
@@ -101,68 +91,123 @@ def binary_channel_entropy(p):
 
 
 # ==============================
-# 8. ASCII-анализ
+# Учёт ошибок канала с ограничением по пропускной способности
+# ==============================
+def effective_information(I_source, N_bits, p_error):
+    """
+    I_source – исходная информация в битах (источник)
+    N_bits – количество битов в сообщении
+    p_error – вероятность ошибки
+    """
+    H_p = binary_channel_entropy(p_error)
+    C = 1 - H_p
+    # Эффективная информация = минимум: источник vs канал
+    I_eff = min(I_source, N_bits * C)
+    return I_eff
+
+# ==============================
+# ASCII-анализ сообщения
 # ==============================
 
-def ascii_entropy(message):
-    ascii_bytes = message.encode('ascii', errors='ignore')
-    bits = ''.join(format(byte, '08b') for byte in ascii_bytes)
+def analyze_text_encoding(message):
+    """
+    Сначала пытается закодировать сообщение в ASCII.
+    Если невозможно — автоматически использует UTF-8.
+    Возвращает: (энтропия, количество информации, название кодировки)
+    """
 
-    counter = Counter(bits)
+    try:
+        encoded_bytes = message.encode('ascii')
+        encoding_used = "ASCII"
+    except UnicodeEncodeError:
+        encoded_bytes = message.encode('utf-8')
+        encoding_used = "UTF-8"
+
+    bits = ''.join(format(byte, '08b') for byte in encoded_bytes)
+
     total_bits = len(bits)
+    counter = Counter(bits)
 
-    probabilities = {bit: count / total_bits for bit, count in counter.items()}
-    entropy = shannon_entropy(probabilities.values())
+    probabilities = [count / total_bits for count in counter.values()]
+    entropy = shannon_entropy(probabilities)
 
-    return entropy
+    information = total_bits * entropy
 
-# ==============================
-# 9. Вспомогательная фукнция для текущего времени
-# ==============================
-def get_current_time():
-    now = datetime.now()
-    # Форматирование: ГГГГ-ММ-ДД_ЧЧ-ММ-СС (например, 2023-10-25_14-30-05)
-    return now.strftime("%Y-%m-%d_%H-%M-%S")
+    return entropy, information, encoding_used
+
 
 # ==============================
-# 10. Главная программа
+# Главная программа
 # ==============================
 
 def main():
 
-    latin_file = "eng.txt"
-    entropy_latin, counter_latin = analyze_text_file(latin_file)
-    print("Энтропия латинского алфавита:", entropy_latin)
-    plot_histogram(counter_latin, "Гистограмма латинского алфавита", f"latin_alphabet_{get_current_time()}.png")
+    # --- ДАТСКИЙ ---
+    H_latin, counter_latin, _ = analyze_text_file(
+        "dan_text.txt", LATIN_ALPHABET)
 
-    cyrillic_file = "ru.txt"
-    entropy_cyrillic, counter_cyrillic = analyze_text_file(cyrillic_file)
-    print("Энтропия кириллического алфавита:", entropy_cyrillic)
-    plot_histogram(counter_cyrillic, "Гистограмма кириллического алфавита", f"cyrillic_alphabet_{get_current_time()}.png")
+    print("Энтропия датского алфавита:", H_latin)
 
-    binary_file = "binary.txt"
-    entropy_binary = analyze_binary_file(binary_file)
-    print("Энтропия бинарного алфавита:", entropy_binary)
+    plot_histogram(counter_latin,
+                   "Гистограмма датского алфавита",
+                   "danish_histogram.png")
 
-    default_name = "Романов Игорь Вячеславович"
-    name = input(f"\nВведите ФИО (по умолчанию: {default_name}): ")
-    if not name.strip():
-        name = default_name
+    # --- КАЗАХСКИЙ ---
+    H_cyr, counter_cyr, _ = analyze_text_file(
+        "kaz_text.txt", CYRILLIC_ALPHABET)
 
-    print("\nКоличество информации (на основе энтропии латиницы):",
-          information_amount(name, entropy_latin))
+    print("Энтропия казахского алфавита:", H_cyr)
 
-    print("Количество информации (на основе энтропии кириллицы):",
-          information_amount(name, entropy_cyrillic))
+    plot_histogram(counter_cyr,
+                   "Гистограмма казахского алфавита",
+                   "kazakh_histogram.png")
 
-    ascii_H = ascii_entropy(name)
-    print("\nЭнтропия ASCII:", ascii_H)
-    print("Количество информации в ASCII:",
-          information_amount(name, ascii_H))
+    # --- БИНАРНЫЙ ФАЙЛ ---
+    H_bin, I_bin_file, N_Bits = analyze_binary_file("binary.txt")
 
-    print("\nЭнтропия канала при вероятности ошибки:")
-    for p in [0.1, 0.5, 1.0]:
-        print(f"p = {p}, H(p) = {binary_channel_entropy(p)}")
+    print("Энтропия бинарного файла:", H_bin)
+    print("Количество информации бинарного файла:", I_bin_file)
+
+    # --- ФИО ---
+    fio_latin = "RomanovIgorVjatjeslavovitj"
+    fio_cyr = "РомановИгорьВячеславович"
+
+    fio_latin_letters = ''.join(c for c in fio_latin if c.isalpha())
+    fio_cyr_letters = ''.join(c for c in fio_cyr if c.isalpha())
+
+    I_latin = len(fio_latin_letters) * H_latin
+    I_cyr = len(fio_cyr_letters) * H_cyr
+
+    print("\nИнформация ФИО (датский):", I_latin)
+    print("Информация ФИО (казахский):", I_cyr)
+
+    # --- Кодирование сообщения ---
+    H_enc_latin, I_enc_latin, enc_latin = analyze_text_encoding(fio_latin)
+    H_enc_cyr, I_enc_cyr, enc_cyr = analyze_text_encoding(fio_cyr)
+
+    print(f"\nЭнтропия {enc_latin} (датский ФИО):", H_enc_latin)
+    print(f"Количество информации в {enc_latin} (датский ФИО):", I_enc_latin)
+
+    print(f"\nЭнтропия {enc_cyr} (казахский ФИО):", H_enc_cyr)
+    print(f"Количество информации в {enc_cyr} (казахский ФИО):", I_enc_cyr)
+
+    # Бинарное представление ФИО (как в C#)
+    I_latin_binary = len(fio_latin) * 8
+    I_cyr_binary = len(fio_cyr) * 8
+
+    print("\nБинарная длина ФИО (датский):", I_latin_binary)
+    print("Бинарная длина ФИО (казахский):", I_cyr_binary)
+
+    # --- Учет ошибок канала ---
+    probabilities = [0.1, 0.5, 1.0]
+
+    for p in probabilities:
+        print(f"\np = {p}")
+        print("Датский:", effective_information(I_latin_binary, len(fio_latin) * 8, p))
+        print("Казахский:", effective_information(I_cyr_binary, len(fio_cyr) * 8, p))
+        print("Бинарный файл:", effective_information(I_bin_file, N_Bits, p))
+        print(f"{enc_latin} (датский):", effective_information(I_enc_latin, len(fio_latin) * 8, p))
+        print(f"{enc_cyr} (казахский):", effective_information(I_enc_cyr, len(fio_cyr) * 8, p))
 
 
 if __name__ == "__main__":
