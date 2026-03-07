@@ -245,3 +245,163 @@ RETURN
 SELECT License_ID, Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats
 FROM Licenses
 WHERE Expiration_Date IS NULL OR Expiration_Date >= GETDATE();
+
+
+EXEC sp_AddVendor N'Microsoft', N'contact@microsoft.com';
+EXEC sp_AddVendor N'Adobe', N'sales@adobe.com';
+EXEC sp_AddVendor N'Kaspersky', N'info@kaspersky.com';
+EXEC sp_AddVendor N'JetBrains', N'support@jetbrains.com';
+EXEC sp_AddVendor N'Oracle', N'info@oracle.com';
+
+EXEC sp_AddLocation N'101A', 10;
+EXEC sp_AddLocation N'202B', 5;
+EXEC sp_AddLocation N'303C', 15;
+EXEC sp_AddLocation N'404D', 0;
+EXEC sp_AddLocation N'505E', 8;
+
+EXEC sp_AddProduct 1, N'Windows 11 Pro', N'Operating System', N'23H2';
+EXEC sp_AddProduct 2, N'Photoshop', N'Graphics Editor', N'2024';
+EXEC sp_AddProduct 3, N'Kaspersky Endpoint Security', N'Antivirus', N'12.0';
+EXEC sp_AddProduct 4, N'IntelliJ IDEA', N'IDE', N'2023.3';
+EXEC sp_AddProduct 5, N'Oracle Database', N'Database', N'19c';
+
+-- 1. Объявляем переменные для дат
+DECLARE 
+    @p1 INT = 1,
+    @p2 INT = 2,
+    @p3 INT = 3,
+    @p4 INT = 4,
+    @p5 INT = 5,
+
+    @pd1 DATE = DATEADD(MONTH, -6, CAST(GETDATE() AS DATE)),
+    @ed1 DATE = DATEADD(YEAR, 1, CAST(GETDATE() AS DATE)),
+
+    @pd2 DATE = DATEADD(MONTH, -3, CAST(GETDATE() AS DATE)),
+    @ed2 DATE = DATEADD(YEAR, 1, CAST(GETDATE() AS DATE)),
+
+    @pd3 DATE = DATEADD(MONTH, -1, CAST(GETDATE() AS DATE)),
+    @ed3 DATE = DATEADD(YEAR, 2, CAST(GETDATE() AS DATE)),
+
+    @pd4 DATE = DATEADD(MONTH, -12, CAST(GETDATE() AS DATE)),
+    @ed4 DATE = DATEADD(MONTH, 6, CAST(GETDATE() AS DATE)),
+
+    @pd5 DATE = DATEADD(MONTH, -24, CAST(GETDATE() AS DATE)),
+
+    @price1 DECIMAL(18,2) = 150.00,
+    @price2 DECIMAL(18,2) = 300.00,
+    @price3 DECIMAL(18,2) = 50.00,
+    @price4 DECIMAL(18,2) = 200.00,
+    @price5 DECIMAL(18,2) = 1000.00,
+
+    @seats1 INT = 50,
+    @seats2 INT = 20,
+    @seats3 INT = 100,
+    @seats4 INT = 15,
+    @seats5 INT = 10;
+
+
+EXEC sp_AddLicense @p1, @pd1, @ed1, @price1, @seats1;
+EXEC sp_AddLicense @p2, @pd2, @ed2, @price2, @seats2;
+EXEC sp_AddLicense @p3, @pd3, @ed3, @price3, @seats3;
+EXEC sp_AddLicense @p4, @pd4, @ed4, @price4, @seats4;
+EXEC sp_AddLicense @p5, @pd5, NULL,  @price5, @seats5;
+
+
+DECLARE
+    @loc1 INT = 1,
+    @loc2 INT = 2,
+    @loc3 INT = 3,
+    @loc4 INT = 4,
+    @loc5 INT = 5,
+
+    @type1 NVARCHAR(50) = N'PC',
+    @type2 NVARCHAR(50) = N'Laptop',
+    @type3 NVARCHAR(50) = N'PC',
+    @type4 NVARCHAR(50) = N'Server',
+    @type5 NVARCHAR(50) = N'Laptop',
+
+    @pd1 DATE = DATEADD(YEAR, -2, CAST(GETDATE() AS DATE)),
+    @pd2 DATE = DATEADD(YEAR, -1, CAST(GETDATE() AS DATE)),
+    @pd3 DATE = DATEADD(YEAR, -3, CAST(GETDATE() AS DATE)),
+    @pd4 DATE = DATEADD(YEAR, -4, CAST(GETDATE() AS DATE)),
+    @pd5 DATE = DATEADD(MONTH, -18, CAST(GETDATE() AS DATE)),
+
+    @life1 INT = 60,
+    @life2 INT = 48,
+    @life3 INT = 72,
+    @life4 INT = 84,
+    @life5 INT = 48,
+
+    @host1 NVARCHAR(100) = N'PC-'  + LEFT(CONVERT(NVARCHAR(36), NEWID()), 8),
+    @host2 NVARCHAR(100) = N'LT-'  + LEFT(CONVERT(NVARCHAR(36), NEWID()), 8),
+    @host3 NVARCHAR(100) = N'PC-'  + LEFT(CONVERT(NVARCHAR(36), NEWID()), 8),
+    @host4 NVARCHAR(100) = N'SRV-' + LEFT(CONVERT(NVARCHAR(36), NEWID()), 8),
+    @host5 NVARCHAR(100) = N'LT-'  + LEFT(CONVERT(NVARCHAR(36), NEWID()), 8);
+
+
+EXEC sp_AddDevice @loc1, @type1, @pd1, @life1, @host1;
+EXEC sp_AddDevice @loc2, @type2, @pd2, @life2, @host2;
+EXEC sp_AddDevice @loc3, @type3, @pd3, @life3, @host3;
+EXEC sp_AddDevice @loc4, @type4, @pd4, @life4, @host4;
+EXEC sp_AddDevice @loc5, @type5, @pd5, @life5, @host5;
+
+EXEC sp_AddInstallation 1, 1, DATEADD(DAY, -5, GETDATE()), 120;
+EXEC sp_AddInstallation 2, 2, DATEADD(DAY, -10, GETDATE()), 85;
+EXEC sp_AddInstallation 3, 3, DATEADD(DAY, -1, GETDATE()), 200;
+EXEC sp_AddInstallation 4, 5, DATEADD(DAY, -30, GETDATE()), 40;
+EXEC sp_AddInstallation 5, 4, DATEADD(DAY, -15, GETDATE()), 60;
+
+DECLARE
+    @d1 DATETIME = DATEADD(DAY, -5,  GETDATE()),
+    @d2 DATETIME = DATEADD(DAY, -10, GETDATE()),
+    @d3 DATETIME = DATEADD(DAY, -1,  GETDATE()),
+    @d4 DATETIME = DATEADD(DAY, -30, GETDATE()),
+    @d5 DATETIME = DATEADD(DAY, -15, GETDATE());
+
+EXEC sp_AddInstallation 1, 1, @d1, 120;
+EXEC sp_AddInstallation 2, 2, @d2, 85;
+EXEC sp_AddInstallation 3, 3, @d3, 200;
+EXEC sp_AddInstallation 4, 5, @d4, 40;
+EXEC sp_AddInstallation 5, 4, @d5, 60;
+
+DECLARE
+    @r2 DATETIME = DATEADD(DAY, -2, GETDATE()),
+    @r4 DATETIME = DATEADD(DAY, -7, GETDATE());
+
+EXEC sp_AddRequest 1, N'Иван Петров',     N'ivan.petrov@mail.com',     NULL, DEFAULT;
+EXEC sp_AddRequest 2, N'Анна Смирнова',   N'anna.smirnova@mail.com',   @r2,  N'Одобрено';
+EXEC sp_AddRequest 3, N'Дмитрий Козлов',  N'd.kozlov@mail.com',        NULL, DEFAULT;
+EXEC sp_AddRequest 4, N'Ольга Морозова',  N'o.morozova@mail.com',      @r4,  N'Отклонено';
+EXEC sp_AddRequest 5, N'Сергей Иванов',   N's.ivanov@mail.com',        NULL, DEFAULT;
+
+
+
+
+SELECT *
+FROM dbo.fn_GetProductsByVendor(1);
+
+SELECT *
+FROM dbo.fn_GetLicensesByProduct(1);
+
+SELECT *
+FROM dbo.fn_GetDevicesByLocation(1);
+
+SELECT *
+FROM dbo.fn_GetRequestsByProduct(1);
+
+SELECT *
+FROM dbo.fn_GetVendor(1);
+
+SELECT *
+FROM dbo.fn_GetActiveLicenses();
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetProductsByVendor(1);
+
+    -- Вывод результата (для SQL Developer / 12c+)
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/

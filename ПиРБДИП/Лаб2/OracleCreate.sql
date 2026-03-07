@@ -232,7 +232,7 @@ END;
 
 -- Продукты по поставщику
 CREATE OR REPLACE FUNCTION fn_GetProductsByVendor(p_Vendor_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -245,7 +245,7 @@ END;
 
 -- Лицензии по продукту
 CREATE OR REPLACE FUNCTION fn_GetLicensesByProduct(p_Product_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -258,7 +258,7 @@ END;
 
 -- Устройства по локации
 CREATE OR REPLACE FUNCTION fn_GetDevicesByLocation(p_Location_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -271,7 +271,7 @@ END;
 
 -- Установки по устройству
 CREATE OR REPLACE FUNCTION fn_GetInstallationsByDevice(p_Device_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -284,7 +284,7 @@ END;
 
 -- Запросы по продукту
 CREATE OR REPLACE FUNCTION fn_GetRequestsByProduct(p_Product_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -297,7 +297,7 @@ END;
 
 -- Получить поставщика
 CREATE OR REPLACE FUNCTION fn_GetVendor(p_Vendor_ID IN NUMBER)
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -310,7 +310,7 @@ END;
 
 -- Активные лицензии
 CREATE OR REPLACE FUNCTION fn_GetActiveLicenses
-RETURN SYS_REFCURSOR IS
+RETURN SYS_REFCURSOR AS
     rc SYS_REFCURSOR;
 BEGIN
     OPEN rc FOR
@@ -318,5 +318,139 @@ BEGIN
         FROM Licenses
         WHERE Expiration_Date IS NULL OR Expiration_Date >= SYSDATE;
     RETURN rc;
+END;
+/
+
+
+
+BEGIN
+    sp_AddVendor('Microsoft', 'contact@microsoft.com');
+    sp_AddVendor('Adobe', 'sales@adobe.com');
+    sp_AddVendor('Kaspersky', 'info@kaspersky.com');
+    sp_AddVendor('JetBrains', 'support@jetbrains.com');
+    sp_AddVendor('Oracle', 'info@oracle.com');
+END;
+/
+
+
+BEGIN
+    sp_AddLocation('101A', 10);
+    sp_AddLocation('202B', 5);
+    sp_AddLocation('303C', 15);
+    sp_AddLocation('404D', 0);
+    sp_AddLocation('505E', 8);
+END;
+/
+
+BEGIN
+    sp_AddProduct(1, 'Windows 11 Pro', 'Operating System', '23H2');
+    sp_AddProduct(2, 'Photoshop', 'Graphics Editor', '2024');
+    sp_AddProduct(3, 'Kaspersky Endpoint Security', 'Antivirus', '12.0');
+    sp_AddProduct(4, 'IntelliJ IDEA', 'IDE', '2023.3');
+    sp_AddProduct(5, 'Oracle Database', 'Database', '19c');
+END;
+/
+
+
+BEGIN
+    sp_AddLicense(1, ADD_MONTHS(SYSDATE, -6),  ADD_MONTHS(SYSDATE, 12), 150, 50);
+    sp_AddLicense(2, ADD_MONTHS(SYSDATE, -3),  ADD_MONTHS(SYSDATE, 12), 300, 20);
+    sp_AddLicense(3, ADD_MONTHS(SYSDATE, -1),  ADD_MONTHS(SYSDATE, 24), 50, 100);
+    sp_AddLicense(4, ADD_MONTHS(SYSDATE, -12), ADD_MONTHS(SYSDATE, 6),  200, 15);
+    sp_AddLicense(5, ADD_MONTHS(SYSDATE, -24), NULL,                   1000, 10);
+END;
+/
+
+
+BEGIN
+    sp_AddDevice(1, 'PC',     ADD_MONTHS(SYSDATE, -24), 60, 'PC-'  || SUBSTR(SYS_GUID(),1,8));
+    sp_AddDevice(2, 'Laptop', ADD_MONTHS(SYSDATE, -12), 48, 'LT-'  || SUBSTR(SYS_GUID(),1,8));
+    sp_AddDevice(3, 'PC',     ADD_MONTHS(SYSDATE, -36), 72, 'PC-'  || SUBSTR(SYS_GUID(),1,8));
+    sp_AddDevice(4, 'Server', ADD_MONTHS(SYSDATE, -48), 84, 'SRV-' || SUBSTR(SYS_GUID(),1,8));
+    sp_AddDevice(5, 'Laptop', ADD_MONTHS(SYSDATE, -18), 48, 'LT-'  || SUBSTR(SYS_GUID(),1,8));
+END;
+/
+
+
+BEGIN
+    sp_AddInstallation(1, 1, SYSDATE - 5, 120);
+    sp_AddInstallation(2, 2, SYSDATE - 10, 85);
+    sp_AddInstallation(3, 3, SYSDATE - 1, 200);
+    sp_AddInstallation(4, 5, SYSDATE - 30, 40);
+    sp_AddInstallation(5, 4, SYSDATE - 15, 60);
+END;
+/
+
+BEGIN
+    sp_AddRequest(1, 'Иван Петров',     'ivan.petrov@mail.com');
+    sp_AddRequest(2, 'Анна Смирнова',   'anna.smirnova@mail.com', SYSDATE - 2, 'Одобрено');
+    sp_AddRequest(3, 'Дмитрий Козлов',  'd.kozlov@mail.com');
+    sp_AddRequest(4, 'Ольга Морозова',  'o.morozova@mail.com', SYSDATE - 7, 'Отклонено');
+    sp_AddRequest(5, 'Сергей Иванов',   's.ivanov@mail.com');
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetProductsByVendor(1);
+
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetLicensesByProduct(1);
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetDevicesByLocation(1);
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetInstallationsByDevice(1);
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetRequestsByProduct(1);
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetVendor(1);
+    DBMS_SQL.RETURN_RESULT(rc);
+END;
+/
+
+
+DECLARE
+    rc SYS_REFCURSOR;
+BEGIN
+    rc := fn_GetActiveLicenses;
+    DBMS_SQL.RETURN_RESULT(rc);
 END;
 /
