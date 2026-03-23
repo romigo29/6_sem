@@ -1,4 +1,4 @@
-ALPHABET = list("aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż")
+ALPHABET = list("aąbcćdeęfghijklłmnńoóprsśtuvwxyzźż")
 N = len(ALPHABET)
 
 char_to_index = {c: i for i, c in enumerate(ALPHABET)}

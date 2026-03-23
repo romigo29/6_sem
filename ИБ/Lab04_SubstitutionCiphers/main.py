@@ -26,8 +26,6 @@ def measure_time(func, *args):
 def main():
     text = read_file("input.txt")
 
-    text = text.lower()
-
     print("1 - Shift cipher")
     print("2 - Porta cipher")
     choice = input("Выбор: ")
@@ -35,6 +33,12 @@ def main():
     if choice == "1":
         enc, enc_time = measure_time(shift_enc, text)
         dec, dec_time = measure_time(shift_dec, enc)
+
+        enc_file = "encrypted_shift.txt"
+        dec_file = "decrypted_shift.txt"
+        freq_enc_file = "shift_freq_encrypted.png"
+        freq_orig_file = "shift_freq_original.png"
+        analysis_text = text
 
     elif choice == "2":
         default_key = "kluczkluczk"
@@ -44,19 +48,25 @@ def main():
         enc, enc_time = measure_time(porta_enc, text, key)
         dec, dec_time = measure_time(porta_dec, enc, key)
 
+        enc_file = "encrypted_porta.txt"
+        dec_file = "decrypted_porta.txt"
+        freq_enc_file = "porta_freq_encrypted.png"
+        freq_orig_file = "porta_freq_original.png"
+        analysis_text = text
+
     else:
         print("Ошибка выбора")
         return
 
-    write_file("encrypted.txt", enc)
-    write_file("decrypted.txt", dec)
+    write_file(enc_file, enc)
+    write_file(dec_file, dec)
 
     # --- Частотный анализ ---
-    freq_original = calculate_frequency(text)
-    freq_encrypted = calculate_frequency(enc)
+    freq_original = calculate_frequency(analysis_text.lower())
+    freq_encrypted = calculate_frequency(enc.lower())
 
-    plot_histogram(freq_original, "Частоты исходного текста", "freq_original.png")
-    plot_histogram(freq_encrypted, "Частоты зашифрованного текста", "freq_encrypted.png")
+    plot_histogram(freq_original, "Частоты исходного текста", freq_orig_file)
+    plot_histogram(freq_encrypted, "Частоты зашифрованного текста", freq_enc_file)
 
     # --- Вывод времени ---
     print("\nВремя выполнения:")

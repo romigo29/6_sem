@@ -6,10 +6,14 @@ def encrypt(text):
     result = ""
 
     for ch in text:
-        if ch in char_to_index:
-            x = char_to_index[ch]
+        lower_ch = ch.lower()
+        if lower_ch in char_to_index:
+            x = char_to_index[lower_ch]
             y = (x + K) % N
-            result += index_to_char[y]
+            encrypted_char = index_to_char[y]
+            if ch != lower_ch:
+                encrypted_char = encrypted_char.upper()
+            result += encrypted_char
         else:
             result += ch
 
@@ -20,10 +24,14 @@ def decrypt(text):
     result = ""
 
     for ch in text:
-        if ch in char_to_index:
-            y = char_to_index[ch]
+        lower_ch = ch.lower()
+        if lower_ch in char_to_index:
+            y = char_to_index[lower_ch]
             x = (y - K) % N
-            result += index_to_char[x]
+            decrypted_char = index_to_char[x]
+            if ch != lower_ch:
+                decrypted_char = decrypted_char.upper()
+            result += decrypted_char
         else:
             result += ch
 

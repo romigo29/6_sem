@@ -1,63 +1,77 @@
-from utils import ALPHABET
+ALPHABET = list("aąbcćdeęfghijklłmnńoóprsśtuvwxyzźż")
+N = len(ALPHABET)  # 34
+
+char_to_index = {c: i for i, c in enumerate(ALPHABET)}
+index_to_char = {i: c for i, c in enumerate(ALPHABET)}
 
 def generate_porta_table():
-    N = len(ALPHABET)
-    half = N // 2
+    half = N // 2  # 17
+
+    first_half = ALPHABET[:half]
+    second_half = ALPHABET[half:]
+
+    # Ключевые пары: (a, ą), (b, c), (ć, d), ... — по 2 буквы на строку таблицы
+    pairs = []
+    for i in range(0, N, 2):
+        pairs.append((ALPHABET[i], ALPHABET[i + 1]))
 
     table = {}
-    pairs = []
-
-    # создаём пары букв
-    i = 0
-    while i < N:
-        if i+1 < N:
-            pairs.append((ALPHABET[i], ALPHABET[i+1]))
-        else:
-            # если последний символ без пары, делаем "одиночку"
-            pairs.append((ALPHABET[i],))
-        i += 2
-
     for idx, pair in enumerate(pairs):
-        shift = half + idx
+        row = [""] * N
 
-        row = ""
-        for j in range(N):
-            row += ALPHABET[(j + shift) % N]
+        for i in range(half):
+            j = (i + idx) % half
+            # first_half[i] -> second_half[j]
+            row[i] = second_half[j]
+            # обратное: second_half[j] -> first_half[i]
+            row[j + half] = first_half[i]
 
         table[pair] = row
 
     return table
 
+
 PORTA_TABLE = generate_porta_table()
 
+
 def get_row(k):
-    for pair in PORTA_TABLE:
+    """Найти строку таблицы по ключевому символу."""
+    for pair, row in PORTA_TABLE.items():
         if k in pair:
-            return PORTA_TABLE[pair]
+            return row
     return None
 
+
 def encrypt(text, key):
-    result = ""
+    result = []
     key = key.lower()
     j = 0
 
     for ch in text:
-        if ch in ALPHABET:
+        lower_ch = ch.lower()
+        if lower_ch in char_to_index:
             k = key[j % len(key)]
             row = get_row(k)
 
-            idx = ALPHABET.index(ch)
+            if row is None:
+                # ключевой символ не в алфавите — пропускаем
+                result.append(ch)
+                continue
 
-            if row and idx < len(row):
-                result += row[idx]
-            else:
-                result += ch  # fallback
+            idx = char_to_index[lower_ch]
+            encrypted_char = row[idx]
 
+            # сохраняем регистр оригинала
+            if ch != lower_ch:
+                encrypted_char = encrypted_char.upper()
+
+            result.append(encrypted_char)
             j += 1
         else:
-            result += ch
+            result.append(ch)
 
-    return result
+    return "".join(result)
 
 
+# Шифр Порта — инволюция: повторное шифрование = расшифрование
 decrypt = encrypt
