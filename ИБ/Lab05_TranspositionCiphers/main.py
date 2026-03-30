@@ -1,79 +1,87 @@
 import time
+import math
+import matplotlib.pyplot as plt
+from route_cipher import encrypt as route_encrypt, decrypt as route_decrypt
+from multi_cipher import encrypt as multi_encrypt, decrypt as multi_decrypt
 
-from shift_cipher import encrypt as shift_enc, decrypt as shift_dec
-from porta_cipher import encrypt as porta_enc, decrypt as porta_dec
-from analysis import calculate_frequency, plot_histogram
+POLISH_ALPHABET = "AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUVWXYZŹŻ"
+POLISH_ALPHABET += POLISH_ALPHABET.lower()
 
+def plot_histogram(text, filename):
+    freq = {}
+    for c in text:
+        if c in POLISH_ALPHABET:
+            freq[c] = freq.get(c, 0) + 1
+    plt.figure(figsize=(10,5))
+    plt.bar(freq.keys(), freq.values())
+    plt.title(filename)
+    plt.savefig(filename)
+    plt.close()
 
-def read_file(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-
-def write_file(path, text):
-    with open(path, "w", encoding="utf-8") as f:
+def save_to_file(filename, text):
+    with open(filename, "w", encoding="utf-8") as f:
         f.write(text)
 
-
-def measure_time(func, *args):
-    start = time.perf_counter()
-    result = func(*args)
-    end = time.perf_counter()
-
-    return result, (end - start)
-
-
 def main():
-    text = read_file("input.txt")
+    with open("input.txt", "r", encoding="utf-8") as f:
+        text = f.read()
 
-    print("1 - Shift cipher")
-    print("2 - Porta cipher")
-    choice = input("Выбор: ")
+    print("Выберите шифр:")
+    print("1 – Маршрутная перестановка")
+    print("2 – Множественная перестановка")
+    choice = input("Введите номер шифра (1 или 2): ")
 
     if choice == "1":
-        text_lower = text.lower()
-        enc, enc_time = measure_time(shift_enc, text_lower)
-        dec, dec_time = measure_time(shift_dec, enc)
+        rows, cols = 10, math.ceil(len(text)/10)
+        start = time.perf_counter()
+        enc = route_encrypt(text, rows, cols)
+        end = time.perf_counter()
+        print("Зашифровано за:", end-start, "сек")
 
-        enc_file = "shift_encrypted.txt"
-        dec_file = "shift_decrypted.txt"
-        freq_enc_file = "shift_freq_encrypted.png"
-        freq_orig_file = "shift_freq_original.png"
-        analysis_text = text_lower
+        start = time.perf_counter()
+        dec = route_decrypt(enc, rows, cols)
+        end = time.perf_counter()
+        print("Расшифровано за:", end-start, "сек")
+
+        save_to_file("encrypted_route.txt", enc)
+        save_to_file("decrypted_route.txt", dec)
+
+        plot_histogram(text, "hist_original_route.png")
+        plot_histogram(enc, "hist_encrypted_route.png")
+
+        print("Файлы сохранены:")
+        print("- encrypted_route.txt")
+        print("- decrypted_route.txt")
+        print("- hist_original_route.png")
+        print("- hist_encrypted_route.png")
 
     elif choice == "2":
-        default_key = "kluczkluczk"
-        user_input = input(f"Введите ключ (Enter = {default_key}): ").strip()
+        key1, key2 = "Игорь", "Романов"
 
-        key = user_input if user_input else default_key
-        enc, enc_time = measure_time(porta_enc, text, key)
-        dec, dec_time = measure_time(porta_dec, enc, key)
+        start = time.perf_counter()
+        enc = multi_encrypt(text, key1, key2)
+        end = time.perf_counter()
+        print("Зашифровано за:", end-start, "сек")
 
-        enc_file = "porta_encrypted.txt"
-        dec_file = "porta_decrypted.txt"
-        freq_enc_file = "porta_freq_encrypted.png"
-        freq_orig_file = "porta_freq_original.png"
-        analysis_text = text
+        start = time.perf_counter()
+        dec = multi_decrypt(enc, key1, key2)
+        end = time.perf_counter()
+        print("Расшифровано за:", end-start, "сек")
+
+        save_to_file("encrypted_multi.txt", enc)
+        save_to_file("decrypted_multi.txt", dec)
+
+        plot_histogram(text, "hist_original_multi.png")
+        plot_histogram(enc, "hist_encrypted_multi.png")
+
+        print("Файлы сохранены:")
+        print("- encrypted_multi.txt")
+        print("- decrypted_multi.txt")
+        print("- hist_original_multi.png")
+        print("- hist_encrypted_multi.png")
 
     else:
-        print("Ошибка выбора")
-        return
-
-    write_file(enc_file, enc)
-    write_file(dec_file, dec)
-
-    # --- Частотный анализ ---
-    freq_original = calculate_frequency(analysis_text.lower())
-    freq_encrypted = calculate_frequency(enc.lower())
-
-    plot_histogram(freq_original, "Частоты исходного текста", freq_orig_file)
-    plot_histogram(freq_encrypted, "Частоты зашифрованного текста", freq_enc_file)
-
-    # --- Вывод времени ---
-    print("\nВремя выполнения:")
-    print(f"Шифрование: {enc_time:.6f} сек")
-    print(f"Дешифрование: {dec_time:.6f} сек")
-
+        print("Неверный выбор. Завершение программы.")
 
 if __name__ == "__main__":
     main()
