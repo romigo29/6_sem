@@ -23,15 +23,13 @@ END
 GO
 
 
-
-
 --3
 CREATE PROCEDURE AddProductChild
-    @ParentNode hierarchyid,      -- Родительский узел
-    @Vendor_ID INT,               -- Вендор нового продукта
-    @Name NVARCHAR(255),          -- Название продукта
-    @Category NVARCHAR(100),      -- Категория
-    @Version NVARCHAR(50)         -- Версия
+    @ParentNode hierarchyid,     
+    @Vendor_ID INT,              
+    @Name NVARCHAR(255),        
+    @Category NVARCHAR(100),     
+    @Version NVARCHAR(50)       
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -39,15 +37,12 @@ BEGIN
     DECLARE @LastChild hierarchyid;
     DECLARE @NewNode hierarchyid;
 
-    -- Находим последний дочерний узел у данного родителя
     SELECT @LastChild = MAX(Category_Node)
     FROM Products
     WHERE Category_Node.GetAncestor(1) = @ParentNode;
 
-    -- Создаём новый дочерний узел после последнего (или первый, если дочерних нет)
     SET @NewNode = @ParentNode.GetDescendant(@LastChild, NULL);
 
-    -- Вставляем новый продукт с вычисленным узлом
     INSERT INTO Products (Vendor_ID, Name, Category, Version, Category_Node)
     VALUES (@Vendor_ID, @Name, @Category, @Version, @NewNode);
 END
@@ -69,8 +64,8 @@ EXEC AddProductChild
 
 --4
 CREATE OR ALTER PROCEDURE MoveProductSubtree
-    @OldParent hierarchyid,  -- узел, под которым находятся перемещаемые подчиненные
-    @NewParent hierarchyid   -- узел, под который нужно переместить
+    @OldParent hierarchyid,  
+    @NewParent hierarchyid   
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -78,15 +73,12 @@ BEGIN
     DECLARE @LastChild hierarchyid;
     DECLARE @NewRoot hierarchyid;
 
-    -- Находим последний дочерний узел у нового родителя
     SELECT @LastChild = MAX(Category_Node)
     FROM Products
     WHERE Category_Node.GetAncestor(1) = @NewParent;
 
-    -- Создаём корень для перемещаемого поддерева
     SET @NewRoot = @NewParent.GetDescendant(@LastChild, NULL);
 
-    -- Переносим всех потомков старого родителя под новый родитель
     UPDATE Products
     SET Category_Node = Category_Node.GetReparentedValue(@OldParent, @NewRoot)
     WHERE Category_Node.IsDescendantOf(@OldParent) = 1
@@ -98,8 +90,6 @@ GO
 DBCC CHECKIDENT ('Products', RESEED, 0);
 delete from products;
 
-select * from products;
-
 INSERT INTO Products (Vendor_ID, Name, Category, Version)
 VALUES (1, 'Software Catalog', 'Root', '1.0'), -- /
 (1, 'Office Software', 'Category', '1.0'),   -- /1
@@ -109,7 +99,6 @@ VALUES (1, 'Software Catalog', 'Root', '1.0'), -- /
 (1, 'IDE', 'Subcategory', '1.0'),            -- /2/1
 (1, 'Version Control', 'Subcategory', '1.0'); -- /2/2
 
--- Корень
 UPDATE Products SET Category_Node = hierarchyid::GetRoot() WHERE Product_ID = 1;
 UPDATE Products SET Category_Node = hierarchyid::Parse('/1/') WHERE Product_ID = 2;
 UPDATE Products SET Category_Node = hierarchyid::Parse('/2/') WHERE Product_ID = 3;
@@ -119,7 +108,8 @@ UPDATE Products SET Category_Node = hierarchyid::Parse('/2/1/') WHERE Product_ID
 UPDATE Products SET Category_Node = hierarchyid::Parse('/2/2/') WHERE Product_ID = 7;
 GO
 
--- вывод иерархий
+select * from products;
+
 SELECT Category_Node.ToString() as Category_Node, Product_ID,
 Vendor_ID, Name, Category, Version from Products
 
@@ -136,11 +126,11 @@ EXEC GetProductHierarchy @node
 DECLARE @ParentNode hierarchyid;
 SELECT @ParentNode = Category_Node
 FROM Products
-WHERE Product_ID = 4;
+WHERE Product_ID = 6;
 EXEC AddProductChild
     @ParentNode = @ParentNode,
     @Vendor_ID = 1,
-    @Name = 'Advanced Word Plugin',
+    @Name = 'Medium Word Plugin',
     @Category = 'Addon',
     @Version = 'v2';
 
@@ -149,7 +139,7 @@ EXEC AddProductChild
 DECLARE @old hierarchyid;
 DECLARE @new hierarchyid;
 
-SET @old = hierarchyid::Parse('/1/1/1/');
-SET @new = hierarchyid::Parse('/1/2/');
+SET @old = hierarchyid::Parse('/1/');
+SET @new = hierarchyid::Parse('/2/');
 
 EXEC MoveProductSubtree @OldParent = @old, @NewParent = @new;
