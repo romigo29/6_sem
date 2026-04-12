@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "fullName": "Ada Lovelace",
+    "nationality": "British",
+    "reqPhotoPath": "/img/ada.jpg"
+  },
+  {
+    "id": 2,
+    "fullName": "Alan Turing",
+    "nationality": "British",
+    "reqPhotoPath": "/img/turing.jpg"
+  }
+]
