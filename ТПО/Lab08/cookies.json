@@ -1,0 +1,11 @@
+[
+  {
+    "domain": "www.demoblaze.com",
+    "httpOnly": false,
+    "name": "user",
+    "path": "/",
+    "sameSite": "Lax",
+    "secure": false,
+    "value": "05bd9e13-8022-4c1c-2fae-6ac71493b591"
+  }
+]
