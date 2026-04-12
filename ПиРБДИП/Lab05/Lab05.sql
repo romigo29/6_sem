@@ -369,30 +369,22 @@ BEGIN
         CAST( COUNT(*) * 100.0 / SUM(COUNT(*)) OVER ()
 		AS DECIMAL(5,2)) AS [% от общего кол-ва],
  
-        CAST(SUM(l.Unit_Price * l.Total_Seats) * 100.0 /
-             SUM(SUM(l.Unit_Price * l.Total_Seats)) OVER ()
+        CAST( SUM(l.Unit_Price * l.Total_Seats) * 100.0 /
+              SUM( SUM(l.Unit_Price * l.Total_Seats)) OVER ()
         AS DECIMAL(5,2)) AS [% от общей стоимости]
  
     FROM Licenses l
         JOIN Products p ON l.Product_ID = p.Product_ID
     WHERE l.Purchase_Date BETWEEN @DateFrom AND @DateTo
  
-    GROUP BY
-        p.Category,
-        p.Name,
-        YEAR(l.Purchase_Date)
- 
-    ORDER BY
-        p.Category,
-        p.Name,
-        [Год];
+    GROUP BY p.Category, p.Name, YEAR(l.Purchase_Date)
+    ORDER BY p.Category, p.Name, [Год];
 END;
 
 SELECT * FROM Licenses;
 SELECT * FROM Products;
 
-EXEC sp_LicenseCostAnalysis '2024-01-01', '2024-12-31';   
-GO
+EXEC sp_LicenseCostAnalysis '2023-01-01', '2024-12-31';   
 
 
 --5. Продемонстрируйте применение функции ранжирования ROW_NUMBER() для разбиения результатов
@@ -434,7 +426,6 @@ BEGIN
         FROM Requests
     )
     DELETE FROM cte
-    FROM cte
     WHERE rn > 1;
 END;
 GO

@@ -81,16 +81,16 @@ INSERT INTO Products (Vendor_ID, Name, Category, Version) VALUES (8, 'PT Applica
 -- 4. Licenses
 -- В Oracle даты задаются через DATE '....' или TO_DATE(...)
 -- ---------------------------------------------------------------------
--- Product 1
+-- Product 1: классический UP-DOWN-UP, плюс ещё один UP-DOWN-UP в конце (2 матча)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2023-01-15', DATE '2026-01-15', 12000, 20);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2023-05-10', DATE '2026-05-10', 12500, 15);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2023-09-20', DATE '2026-09-20', 13000, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2024-02-05', DATE '2027-02-05', 13500, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2023-09-20', DATE '2026-09-20', 11000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2024-02-05', DATE '2027-02-05', 11500, 12);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2024-07-15', DATE '2027-07-15', 14000, 18);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2025-03-01', DATE '2028-03-01', 14500, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2025-10-10', DATE '2028-10-10', 15000, 8);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2025-03-01', DATE '2028-03-01', 12500, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (1, DATE '2025-10-10', DATE '2028-10-10', 13000, 8);
 
--- Product 2
+-- Product 2: только монотонный рост (матча НЕ должно быть)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (2, DATE '2023-02-01', DATE '2024-02-01', 5000, 25);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (2, DATE '2023-06-15', DATE '2024-06-15', 5200, 20);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (2, DATE '2023-11-05', DATE '2024-11-05', 5400, 30);
@@ -99,87 +99,129 @@ INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, To
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (2, DATE '2025-01-25', DATE '2026-01-25', 6000, 20);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (2, DATE '2025-09-30', DATE '2026-09-30', 6200, 35);
 
--- Product 3
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2023-03-20', DATE '2026-03-20', 45000, 8);
+-- Product 3: DOWN-UP-DOWN (обратный паттерн, матча НЕ должно быть)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2023-03-20', DATE '2026-03-20', 48000, 8);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2023-07-10', DATE '2026-07-10', 46000, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2024-01-15', DATE '2027-01-15', 47000, 6);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2024-06-15', DATE '2027-06-15', 48000, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2025-04-01', DATE '2028-04-01', 50000, 7);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2024-01-15', DATE '2027-01-15', 43000, 6);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2024-06-15', DATE '2027-06-15', 47000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (3, DATE '2025-04-01', DATE '2028-04-01', 41000, 7);
 
--- Product 4 (бесплатное ПО)
+-- Product 4: бесплатное ПО, все цены = 0 (все FLAT, матча нет)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (4, DATE '2023-04-10', NULL, 0, 40);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (4, DATE '2023-10-01', NULL, 0, 60);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (4, DATE '2024-05-05', NULL, 0, 50);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (4, DATE '2025-01-01', NULL, 0, 55);
 
--- Product 5
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2023-05-01', DATE '2024-05-01', 18000, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2023-12-01', DATE '2024-12-01', 18500, 12);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2024-04-10', DATE '2025-04-10', 19000, 15);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2024-09-15', DATE '2025-09-15', 19500, 12);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2025-02-20', DATE '2026-02-20', 20000, 8);
+-- Product 5: классический UP-DOWN-UP (один матч)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2023-05-01', DATE '2024-05-01', 16000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2023-12-01', DATE '2024-12-01', 18000, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2024-04-10', DATE '2025-04-10', 17000, 15);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2024-09-15', DATE '2025-09-15', 16500, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2025-02-20', DATE '2026-02-20', 19000, 8);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (5, DATE '2025-11-05', DATE '2026-11-05', 21000, 6);
 
--- Product 6
+-- Product 6: только монотонный рост (матча НЕ должно быть)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (6, DATE '2023-06-01', DATE '2024-06-01', 18000, 8);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (6, DATE '2023-08-15', DATE '2024-08-15', 18500, 10);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (6, DATE '2024-02-10', DATE '2025-02-10', 19000, 7);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (6, DATE '2024-08-20', DATE '2025-08-20', 19500, 10);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (6, DATE '2025-03-15', DATE '2026-03-15', 20000, 6);
 
--- Product 7
+-- Product 7: только монотонный рост (матча НЕ должно быть)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (7, DATE '2023-01-10', DATE '2024-01-10', 22000, 5);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (7, DATE '2023-07-01', DATE '2024-07-01', 22500, 7);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (7, DATE '2024-01-10', DATE '2025-01-10', 23000, 6);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (7, DATE '2024-10-10', DATE '2025-10-10', 23500, 5);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (7, DATE '2025-06-01', DATE '2026-06-01', 24000, 4);
 
--- Product 8
+-- Product 8: только монотонный рост (матча НЕ должно быть)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (8, DATE '2023-02-01', DATE '2024-02-01', 25000, 12);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (8, DATE '2023-09-01', DATE '2024-09-01', 25500, 15);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (8, DATE '2024-03-01', DATE '2025-03-01', 26000, 10);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (8, DATE '2024-09-05', DATE '2025-09-05', 27000, 15);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (8, DATE '2025-05-01', DATE '2026-05-01', 28000, 12);
 
--- Product 9 (PyCharm)
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9,  DATE '2023-10-01', DATE '2024-10-01', 18000, 10);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9,  DATE '2024-10-10', DATE '2025-10-10', 19500, 12);
+-- Product 9 (PyCharm): UP-DOWN-UP с длинными сериями (проверка жадности +)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2023-01-10', DATE '2024-01-10', 15000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2023-05-10', DATE '2024-05-10', 16000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2023-10-01', DATE '2024-10-01', 18000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2024-02-15', DATE '2025-02-15', 17000, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2024-06-15', DATE '2025-06-15', 16000, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2024-10-10', DATE '2025-10-10', 19500, 12);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (9, DATE '2025-04-01', DATE '2026-04-01', 21000, 14);
 
--- Product 10 (DataGrip)
+-- Product 10 (DataGrip): только 3 строки, формально UP-DOWN-UP не складывается (мало данных)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (10, DATE '2024-01-20', DATE '2025-01-20', 15000, 8);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (10, DATE '2024-08-20', DATE '2025-08-20', 16000, 8);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (10, DATE '2025-03-20', DATE '2026-03-20', 14500, 10);
 
--- Product 11 (Kaspersky Endpoint)
+-- Product 11 (Kaspersky Endpoint): ДВА матча подряд UP-DOWN-UP / UP-DOWN-UP
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2023-03-01', DATE '2024-03-01', 3500, 50);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2024-03-05', DATE '2025-03-05', 3800, 50);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2025-03-10', DATE '2026-03-10', 4000, 55);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2023-07-01', DATE '2024-07-01', 3800, 50);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2023-11-01', DATE '2024-11-01', 3600, 50);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2024-03-05', DATE '2025-03-05', 4100, 50);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2024-07-05', DATE '2025-07-05', 4300, 55);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2024-11-05', DATE '2025-11-05', 4000, 55);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2025-03-10', DATE '2026-03-10', 4500, 55);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (11, DATE '2025-09-10', DATE '2026-09-10', 4700, 60);
 
--- Product 12 (Kaspersky Total)
+-- Product 12 (Kaspersky Total): UP-FLAT-DOWN-UP (FLAT должен порвать паттерн перед FLAT)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2023-05-15', DATE '2024-05-15', 4800, 20);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2023-11-15', DATE '2024-11-15', 5000, 20);
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2024-11-20', DATE '2025-11-20', 5500, 25);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2024-05-15', DATE '2025-05-15', 5000, 20);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2024-11-20', DATE '2025-11-20', 4700, 25);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2025-05-20', DATE '2026-05-20', 5500, 25);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (12, DATE '2025-11-20', DATE '2026-11-20', 5800, 25);
 
--- Product 13 (1С:Предприятие)
+-- Product 13 (1С:Предприятие): UP-DOWN-UP, аккуратный матч
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (13, DATE '2023-08-01', NULL, 35000, 5);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (13, DATE '2024-02-01', NULL, 37000, 5);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (13, DATE '2024-08-01', NULL, 34000, 6);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (13, DATE '2025-02-01', NULL, 36000, 6);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (13, DATE '2025-08-01', NULL, 39000, 7);
 
--- Product 14 (1С:Бухгалтерия)
+-- Product 14 (1С:Бухгалтерия): только 2 строки (мало данных, матча нет)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (14, DATE '2023-08-01', NULL, 28000, 3);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (14, DATE '2024-08-01', NULL, 30000, 3);
 
--- Product 15 (AutoCAD)
+-- Product 15 (AutoCAD): ДВА матча UP-DOWN-UP
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2023-06-01', DATE '2024-06-01', 80000, 10);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2023-12-01', DATE '2024-12-01', 85000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2024-06-01', DATE '2025-06-01', 82000, 10);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2024-12-10', DATE '2025-12-10', 90000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2025-04-10', DATE '2026-04-10', 95000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2025-08-10', DATE '2026-08-10', 88000, 10);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (15, DATE '2025-12-10', DATE '2026-12-10', 100000, 12);
 
--- Product 16 (3ds Max)
+-- Product 16 (3ds Max): длинная серия роста (UP+ жадный) → DOWN → UP
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2023-04-15', DATE '2024-04-15', 88000, 5);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2023-10-15', DATE '2024-10-15', 90000, 5);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2024-04-15', DATE '2025-04-15', 95000, 5);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2024-10-15', DATE '2025-10-15', 98000, 6);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2025-04-15', DATE '2026-04-15', 92000, 6);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (16, DATE '2025-10-15', DATE '2026-10-15', 99000, 6);
 
--- Product 17 (Oracle DB SE)
-INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2023-06-01', DATE '2025-06-01', 150000, 2);
+-- Product 17 (Oracle DB SE): только монотонное падение (матча НЕ должно быть)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2023-06-01', DATE '2025-06-01', 160000, 2);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2023-12-01', DATE '2025-12-01', 155000, 2);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2024-06-01', DATE '2026-06-01', 150000, 2);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2024-12-01', DATE '2026-12-01', 145000, 2);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (17, DATE '2025-06-01', DATE '2027-06-01', 140000, 2);
 
--- Product 18 (Oracle Java SE)
+-- Product 18 (Oracle Java SE): UP-FLAT-DOWN-UP (FLAT в середине рвёт паттерн)
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (18, DATE '2023-07-01', DATE '2024-07-01', 7500, 20);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (18, DATE '2024-01-01', DATE '2025-01-01', 8000, 20);
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (18, DATE '2024-07-01', DATE '2025-07-01', 8000, 20);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (18, DATE '2025-01-01', DATE '2026-01-01', 7800, 20);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (18, DATE '2025-07-01', DATE '2026-07-01', 8500, 20);
 
--- Product 19 (MaxPatrol SIEM)
+-- Product 19 (MaxPatrol SIEM): UP-DOWN-UP, минимально возможное число строк (4)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (19, DATE '2024-02-01', DATE '2025-02-01', 250000, 1);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (19, DATE '2024-08-01', DATE '2025-08-01', 270000, 1);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (19, DATE '2025-02-01', DATE '2026-02-01', 260000, 1);
+INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (19, DATE '2025-08-01', DATE '2026-08-01', 280000, 1);
 
--- Product 20 (PT Application Firewall)
+-- Product 20 (PT Application Firewall): только 1 строка (матча нет, партиция вырожденная)
 INSERT INTO Licenses (Product_ID, Purchase_Date, Expiration_Date, Unit_Price, Total_Seats) VALUES (20, DATE '2024-09-01', DATE '2025-09-01', 180000, 1);
 
 -- ---------------------------------------------------------------------
@@ -324,16 +366,13 @@ SELECT * FROM Products;
 SELECT * FROM Locations;
 SELECT * FROM Vendors;
 
-
--- =====================================================================
--- Задание 3. Итоги стоимости определённого вида ПО помесячно,
+-- 3. Итоги стоимости определённого вида ПО помесячно,
 -- за квартал, за полгода, за год. Oracle-версия хранимой процедуры.
--- =====================================================================
 CREATE OR REPLACE PROCEDURE sp_ProductCostByPeriod (
     p_Product_ID IN NUMBER,
-    p_StartDate  IN DATE,
-    p_EndDate    IN DATE,
-    p_Cursor     OUT SYS_REFCURSOR
+    p_StartDate IN DATE,
+    p_EndDate IN DATE,
+    p_Cursor OUT SYS_REFCURSOR
 ) AS
 BEGIN
     OPEN p_Cursor FOR
@@ -367,7 +406,7 @@ BEGIN
             (ProductName, Yr, Hf),
             (ProductName, Yr)
         )
-        ORDER BY Yr, Mn NULLS LAST, Qr NULLS LAST, Hf NULLS LAST;
+        ORDER BY Yr, Mn, Qr, Hf;
 END;
 /
 
@@ -383,25 +422,23 @@ SELECT * FROM Licenses WHERE Product_ID = 2;
 --   их доля в общей стоимости лицензий (%).
 CREATE OR REPLACE PROCEDURE sp_LicenseCostAnalysis (
     p_DateFrom IN DATE DEFAULT DATE '2023-01-01',
-    p_DateTo   IN DATE DEFAULT DATE '2025-12-31',
-    p_Cursor   OUT SYS_REFCURSOR
+    p_DateTo IN DATE DEFAULT DATE '2025-12-31',
+    p_Cursor OUT SYS_REFCURSOR
 ) AS
 BEGIN
     OPEN p_Cursor FOR
         SELECT
-            p.Category                                     AS Category,
-            p.Name                                         AS Product,
-            EXTRACT(YEAR FROM l.Purchase_Date)             AS Yr,
-            COUNT(*)                                       AS Lic_Count,
-            SUM(l.Unit_Price * l.Total_Seats)              AS Total_Cost,
+            p.Category AS Category,
+            p.Name AS Product,
+            EXTRACT(YEAR FROM l.Purchase_Date) AS Yr,
+            COUNT(*) AS Lic_Count,
+            SUM(l.Unit_Price * l.Total_Seats) AS Total_Cost,
 
-            CAST(
-                COUNT(*) * 100 / SUM(COUNT(*)) OVER ()
-                AS NUMBER(5,2)
+            CAST( COUNT(*) * 100 / SUM(COUNT(*)) OVER ()
+                  AS NUMBER(5,2)
             ) AS Pct_Of_Count,
 
-            CAST(
-                SUM(l.Unit_Price * l.Total_Seats) * 100 /
+            CAST( SUM(l.Unit_Price * l.Total_Seats) * 100 /
                 SUM(SUM(l.Unit_Price * l.Total_Seats)) OVER ()
                 AS NUMBER(5,2)
             ) AS Pct_Of_Cost
@@ -409,14 +446,8 @@ BEGIN
         FROM Licenses l
              JOIN Products p ON l.Product_ID = p.Product_ID
         WHERE l.Purchase_Date BETWEEN p_DateFrom AND p_DateTo
-        GROUP BY
-            p.Category,
-            p.Name,
-            EXTRACT(YEAR FROM l.Purchase_Date)
-        ORDER BY
-            p.Category,
-            p.Name,
-            Yr;
+        GROUP BY p.Category, p.Name, EXTRACT(YEAR FROM l.Purchase_Date)
+        ORDER BY p.Category, p.Name, Yr;
 END;
 /
 
@@ -424,19 +455,18 @@ VARIABLE rc2 REFCURSOR;
 EXEC sp_LicenseCostAnalysis(DATE '2024-01-01', DATE '2024-12-31', :rc2);
 PRINT rc2;
 
--- Задание 7. Для каждого вендора – суммы затрат на лицензирование
+-- 7. Для каждого вендора – суммы затрат на лицензирование
 -- за последние 6 месяцев помесячно (накопительное окно 6 периодов).
-
 CREATE OR REPLACE PROCEDURE sp_VendorCostLast6Months (
     p_Cursor OUT SYS_REFCURSOR
 ) AS
 BEGIN
     OPEN p_Cursor FOR
         SELECT
-            v.Name                                           AS Vendor,
-            EXTRACT(YEAR  FROM l.Purchase_Date)              AS Yr,
-            EXTRACT(MONTH FROM l.Purchase_Date)              AS Mn,
-            SUM(l.Unit_Price * l.Total_Seats)                AS Monthly_Cost,
+            v.Name AS Vendor,
+            EXTRACT(YEAR  FROM l.Purchase_Date) AS Yr,
+            EXTRACT(MONTH FROM l.Purchase_Date) AS Mn,
+            SUM(l.Unit_Price * l.Total_Seats) AS Monthly_Cost,
 
             SUM(SUM(l.Unit_Price * l.Total_Seats)) OVER (
                 PARTITION BY v.Vendor_ID
@@ -448,13 +478,9 @@ BEGIN
         FROM Licenses l
              JOIN Products p ON l.Product_ID = p.Product_ID
              JOIN Vendors  v ON p.Vendor_ID  = v.Vendor_ID
-        GROUP BY
-            v.Vendor_ID,
-            v.Name,
-            EXTRACT(YEAR  FROM l.Purchase_Date),
+        GROUP BY v.Vendor_ID, v.Name, EXTRACT(YEAR  FROM l.Purchase_Date),
             EXTRACT(MONTH FROM l.Purchase_Date)
-        ORDER BY
-            v.Name, Yr, Mn;
+        ORDER BY v.Name, Yr, Mn;
 END;
 /
 
@@ -463,10 +489,8 @@ EXEC sp_VendorCostLast6Months(:rc3);
 PRINT rc3;
 
 
--- =====================================================================
--- Задание 8. Какой тип ПО (категория) использовался наибольшее число
+-- 8. Какой тип ПО (категория) использовался наибольшее число
 -- раз для устройств определённого вида? Вернуть для всех видов устройств.
--- =====================================================================
 CREATE OR REPLACE PROCEDURE sp_TopCategoryByDeviceType (
     p_Cursor OUT SYS_REFCURSOR
 ) AS
@@ -474,9 +498,9 @@ BEGIN
     OPEN p_Cursor FOR
         WITH cte AS (
             SELECT
-                d.Device_Type                               AS Device_Type,
-                p.Category                                  AS Category,
-                COUNT(*)                                    AS Install_Count,
+                d.Device_Type AS Device_Type,
+                p.Category AS Category,
+                COUNT(*) AS Install_Count,
                 ROW_NUMBER() OVER (
                     PARTITION BY d.Device_Type
                     ORDER BY COUNT(*) DESC
@@ -485,9 +509,7 @@ BEGIN
                  JOIN Devices  d ON i.Device_ID  = d.Device_ID
                  JOIN Licenses l ON i.License_ID = l.License_ID
                  JOIN Products p ON l.Product_ID = p.Product_ID
-            GROUP BY
-                d.Device_Type,
-                p.Category
+            GROUP BY d.Device_Type, p.Category
         )
         SELECT Device_Type, Category, Install_Count
         FROM cte
