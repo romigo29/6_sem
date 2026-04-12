@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/Scripts/python main.py)",
+      "Bash(pip install:*)",
+      "Bash(python -c \"from pypdf import PdfReader; r = PdfReader\\(''D:/BSTU/6 семестр/ИБ/лабораторный практикум ч2.pdf''\\); print\\(len\\(r.pages\\)\\)\")",
+      "Bash(python -c \"import PyPDF2; r = PyPDF2.PdfReader\\(open\\(''D:/BSTU/6 семестр/ИБ/лабораторный практикум ч2.pdf'',''rb''\\)\\); print\\(len\\(r.pages\\)\\)\")",
+      "Bash(pip list:*)",
+      "Bash(python main.py)",
+      "Bash(python -u -c \":*)"
+    ]
+  }
+}
