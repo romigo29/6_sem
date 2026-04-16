@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="API-Gateway/API-Gateway.csproj" />
+  <Project Path="API-GatewayRR/API-GatewayRR.csproj" Id="609bcc32-5403-407c-bde2-f84fe9fd45a9" />
+  <Project Path="TDWA04-01/TDWA04-01.csproj" />
+</Solution>
