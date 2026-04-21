@@ -1,0 +1,14 @@
+{
+  "name": "lab09-unit-tests",
+  "version": "1.0.0",
+  "description": "Лабораторная 9. Юнит-тестирование курсового проекта FitFlow (Node.js)",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "node run-coverage.js",
+    "test:verbose": "jest --verbose"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
