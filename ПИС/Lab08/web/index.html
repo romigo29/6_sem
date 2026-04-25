@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <p>WebSocket client started</p>
+    <div id="output"></div>
+    <script>
+        const socket = new WebSocket("ws://localhost:3000/ws");
+        const out = document.getElementById("output");
+
+        socket.onopen = () => {
+            let i = 1;
+
+            const interval = setInterval(() => {
+                const message = "from browser message " + i;
+                socket.send(message);
+
+                i++;
+
+                if (i > 5) {
+                    clearInterval(interval);
+
+                    setTimeout(() => {
+                        socket.close(1000, "bye");
+                    }, 100);
+                }
+            }, 1000);
+        };
+
+        socket.onmessage = (e) => {
+            const p = document.createElement("p");
+            p.textContent = "server: " + e.data;
+            out.appendChild(p);
+        };
+    </script>
+</body>
+
+</html>
