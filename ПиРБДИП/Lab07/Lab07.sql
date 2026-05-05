@@ -6,7 +6,7 @@ WITH months AS (
 current_license AS (
     SELECT l.Location_ID, COUNT(*) AS cnt
     FROM Locations l 
-    JOIN Devices d       ON l.Location_ID = d.Location_ID
+    JOIN Devices d ON l.Location_ID = d.Location_ID
     JOIN Installations i ON i.Device_ID   = d.Device_ID
     GROUP BY l.Location_ID
 ),
@@ -25,14 +25,14 @@ SELECT Location_ID, month_num, current_licenses, growth, obsolete_cnt, planned_l
 FROM (
     SELECT l.Location_ID,
            m.month_num,
-           NVL(cl.cnt, 0)                          AS current_licenses,
-           ROUND(l.Planned_Growth_Seats / 12, 2)   AS growth,
-           NVL(ob.cnt, 0)                          AS obsolete_cnt
+           NVL(cl.cnt, 0) AS current_licenses,
+           ROUND(l.Planned_Growth_Seats / 12, 2) AS growth,
+           NVL(ob.cnt, 0) AS obsolete_cnt
     FROM Locations l
     CROSS JOIN months m
-    LEFT JOIN current_license   cl ON cl.Location_ID = l.Location_ID
+    LEFT JOIN current_license cl ON cl.Location_ID = l.Location_ID
     LEFT JOIN obsolete_by_month ob ON ob.Location_ID = l.Location_ID
-                                  AND ob.month_num   = m.month_num
+    AND ob.month_num   = m.month_num
 )
 MODEL
     PARTITION BY (Location_ID)
