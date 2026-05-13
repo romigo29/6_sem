@@ -1,0 +1,37 @@
+services:
+  mssql-celebrities:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD}"
+      MSSQL_PID: "Developer"
+    ports:
+      - "10433:1433"
+    volumes:
+      - mssql_celebrities_data:/var/opt/mssql
+
+  tdwa07-01:
+    image: ${DOCKERHUB_USERNAME}/tdwa07-01:latest
+    restart: unless-stopped
+    build:
+      context: .
+    env_file:
+      - .env
+    depends_on:
+      - mssql-celebrities
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    depends_on:
+      - tdwa07-01
+      - mssql-celebrities
+    ports:
+      - "8080:80"
+      - "11433:1433"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  mssql_celebrities_data:
