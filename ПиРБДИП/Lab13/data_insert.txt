@@ -1,0 +1,115 @@
+//Licenses
+db.Licenses.deleteMany({});
+
+db.Licenses.insertMany([
+  {
+    license_id: 1,
+    product_name: "Microsoft Office",
+    vendor: "Microsoft",
+    category: "Office",
+    details: {
+      status: "active",
+      seats: 30,
+      used: 20,
+      unit_price: 120,
+      tags: ["office", "cloud"],
+      support_phone: "+375291112233"
+    }
+  },
+  {
+    license_id: 2,
+    product_name: "Adobe Photoshop",
+    vendor: "Adobe",
+    category: "Graphics",
+    details: {
+      status: "active",
+      seats: 10,
+      used: 10,
+      unit_price: 250,
+      tags: ["graphics", "design"]
+    }
+  },
+  {
+    license_id: 3,
+    product_name: "Oracle Database",
+    vendor: "Oracle",
+    category: "Database",
+    details: {
+      status: "expired",
+      seats: 5,
+      used: 5,
+      unit_price: 1500,
+      tags: ["database", "server"],
+      support_phone: "+375292223344"
+    }
+  },
+  {
+    license_id: 4,
+    product_name: "IntelliJ IDEA",
+    vendor: "JetBrains",
+    category: "Development",
+    details: {
+      status: "expired",
+      seats: 15,
+      used: 9,
+      unit_price: 180,
+      tags: ["development", "ide"]
+    }
+  },
+  {
+    license_id: 5,
+    product_name: "Visual Studio",
+    vendor: "Microsoft",
+    category: "Development",
+    details: {
+      status: "active",
+      seats: 12,
+      used: 8,
+      unit_price: 300,
+      tags: ["development", "microsoft"],
+      support_phone: "+375293334455"
+    }
+  }
+]);
+
+// Locations
+
+db.Locations.deleteMany({});
+
+db.Locations.insertMany([
+  {
+    location_id: 1,
+    building: "Main building",
+    room: "101",
+    department: "Accounting",
+    devices: ["ACC-PC-01", "ACC-PC-02"]
+  },
+  {
+    location_id: 2,
+    building: "Design center",
+    room: "205",
+    department: "Design",
+    devices: ["DES-PC-01"]
+  },
+  {
+    location_id: 3,
+    building: "IT department",
+    room: "310",
+    department: "IT",
+    devices: ["IT-SRV-01", "IT-PC-01"]
+  },
+  {
+    location_id: 4,
+    building: "IT department",
+    room: "312",
+    department: "Development",
+    devices: ["DEV-PC-01", "DEV-PC-02"]
+  },
+  {
+    location_id: 5,
+    building: "Server room",
+    room: "SR-1",
+    department: "IT",
+    devices: ["DB-SERVER-01"]
+  }
+]);

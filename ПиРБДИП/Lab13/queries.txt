@@ -1,0 +1,66 @@
+//3
+db.Licenses.updateOne({license_id: 3}, {$set: {"details.status": "active"}})
+db.Locations.updateMany({}, {$set: {"department": "Business"}})
+
+//4
+db.Licenses.find({"details.seats" : {$gt : 7}})
+
+db.Locations.find({devices : {$in : ["IT-SRV-01", "IT-PC-01"]}})
+
+db.Licenses.find({"details.support_phone": {$exists : true}})
+
+db.Licenses.find({"details.unit_price" : {"$type" : "number"}})
+
+db.Licenses.find({vendor: {$regex : "dobe"}})
+
+//5
+db.Licenses.find({},
+            {_id : 0, product_name : 1, vendor: 1, category: 1, "details.status" : 1})
+            
+//6
+db.Licenses.countDocuments()
+db.Locations.countDocuments({location_id : {$gt : 2}})
+
+//7
+db.Licenses.find().skip(1).limit(2)
+
+//8
+db.Locations.distinct("department")
+
+//9
+db.Licenses.aggregate([
+  {
+    $group: {
+      _id: null,
+      average_price: { $avg: "$details.unit_price" },
+      min_price: { $min: "$details.unit_price" },
+      max_price: { $max: "$details.unit_price" }
+    }
+  }
+])
+db.Locations.aggregate([
+  {
+    $group: {
+      _id: "$department",
+      locations_count: { $sum: 1 }
+    }
+  }
+]);
+
+
+//10
+db.Licenses.aggregate([
+  {$match : {}},
+  {$group : {
+    _id : {vendor : "$vendor", category: "$category"},
+    licenses_count: {$sum : 1}
+  }}
+])
+
+db.Licenses.aggregate([
+  {$match : {"details.unit_price" : 120}},
+  {$group : {
+    _id : {vendor : "$vendor", category: "$category"},
+    licenses_count: {$sum : 1}
+  }}
+])
