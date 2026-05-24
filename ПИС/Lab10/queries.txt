@@ -1,0 +1,38 @@
+//GET ALL
+{
+  celebrities {
+    id
+    fullName
+    nationality
+  }
+}
+
+//GET ONE
+{
+  celebrity(id: 1) {
+    fullName
+    nationality
+  }
+}
+
+//CREATE ONE
+mutation {
+  createCelebrity(fullName: "Keanu Reeves", nationality: "Canadian", reqPhotoPath: "/photos/keanu.jpg") {
+    id
+    fullName
+  }
+}
+
+//UPDATE ONE
+mutation {
+  updateCelebrity(id: 1, nationality: "American/Canadian") {
+    id
+    fullName
+    nationality
+  }
+}
+
+//DELETE ONE
+mutation {
+  deleteCelebrity(id: 1)
+}
