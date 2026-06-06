@@ -1,0 +1,4 @@
+dotnet run --project .\TDWA04-01\TDWA04-01.csproj --launch-profile TDWA04_01_X
+dotnet run --project .\TDWA04-01\TDWA04-01.csproj --launch-profile TDWA04_01_Y
+dotnet run --project .\TDWA04-01\TDWA04-01.csproj --launch-profile TDWA04_01_Z
+dotnet run --project .\TDWA04-01\API-Gateway\API-Gateway.csproj --launch-profile ApiGateway
